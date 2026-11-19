@@ -1,0 +1,39 @@
+{% extends 'checkbook_base.html' %}
+{% block title %}Balance Sheet{% endblock %}
+{% block content %}
+			<div id="all-transactions-form">
+				<form>
+					<br>
+					<label>Account Holder:</label><input id="accountholder" type="text" name="accountHolder" value="{{ account|default:'' }}" readonly><br><br>
+					<label>Current Balance:</label><input id="balance" type="text" name="currentBalance" value="{% if account %}${{ balance|floatformat:2 }}{% endif %}" readonly>
+					<button type="button"><a href="{% url 'transaction' %}{% if account %}?account={{ account.pk }}{% endif %}">Add Transaction+</a></button>
+				</form>
+				<br><br>
+			</div>
+			<h2>RECENT TRANSACTIONS</h2>
+
+			<table class="table table-responsive" id="transactions-table">
+				<tr id="headerRow">
+					<th>Date</th>
+					<th>Type</th>
+					<th>Description</th>
+					<th>Amount</th>
+					<th>Balance</th>
+				</tr>
+				{% for row in rows %}
+				<tr>
+					<td class="center">{{ row.transaction.date|date:"n/j/y" }}</td>
+					<td class="center">{{ row.transaction.type }}</td>
+					<td class="left">{{ row.transaction.description }}</td>
+					<td class="right">${{ row.transaction.amount|floatformat:2 }}</td>
+					<td class="right">${{ row.balance|floatformat:2 }}</td>
+				</tr>
+				{% empty %}
+				<tr>
+					<td colspan="5" class="center">No transactions yet.</td>
+				</tr>
+				{% endfor %}
+			</table>
+
+			<br><br>
+{% endblock %}
